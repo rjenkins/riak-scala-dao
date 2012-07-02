@@ -11,7 +11,7 @@ Requirements
 Extending RiakEntityDAO
 ----------------------_
 
-```
+```scala
 class GuitarDAO(storageDriver: RiakStorageDriver[String, Guitar])
   extends RiakEntityDAO[String, Guitar](storageDriver) with Converter[Guitar] {
 
@@ -35,27 +35,34 @@ class GuitarDAO(storageDriver: RiakStorageDriver[String, Guitar])
 Examples
 --------
 
-```
+```scala
 val riakClient: IRiakClient = RiakFactory.pbcClient("localhost", 8087)
 val guitarDao = new GuitarDAO(new RiakDriver[Guitar]("guitars", riakClient))
+```
 
 * Saving *
-
+```scala
 val jazzMaster = new Guitar("1", "fender", "JazzMaster", 1963)
 guitarDao.persist(jazzMaster.id, jazzMaster)
+```
 
 * Retreiving *
+```scala
 val jazzMaster = new Guitar("1", "fender", "JazzMaster", 1963)
 guitarDao.persist(jazzMaster.id, jazzMaster)
 guitarDao.getByKey("1")
+```
 
 * Deleting *
+```scala
 val jazzMaster = new Guitar("1", "fender", "JazzMaster", 1963)
 guitarDao.persist(jazzMaster.id, jazzMaster)
 guitarDao.deleteByKey("1")
+```
 
 * Secondary Indexing *
 
+```scala
 val jazzMaster = new Guitar("1", "fender", "JazzMaster", 1963)
 guitarDao.persist(jazzMaster.id, jazzMaster)
 guitarDao.findFor2i("make", "fender")
