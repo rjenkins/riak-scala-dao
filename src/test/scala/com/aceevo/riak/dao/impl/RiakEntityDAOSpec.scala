@@ -68,15 +68,15 @@ class RiakEntityDAOSpec extends Spec with Logging {
 
       val jazzMaster = new Guitar("1", "fender", "JazzMaster", 1963)
       guitarDao.persist(jazzMaster.id, jazzMaster)
-      guitarDao.deleteAllFor2i("value", "boundary")
-      guitarDao.findFor2i("value", "boundary").size must be(0)
+      guitarDao.deleteAllFor2i("make", "fender")
+      guitarDao.findFor2i("make", "fender").size must be(0)
     }
 
   }
 
 }
 
-case class Guitar(var id: String, make: String, var model: String, var year: Int) {}
+case class Guitar(var id: String, make: String, val model: String, val year: Int) {}
 
 class GuitarDAO(storageDriver: RiakStorageDriver[String, Guitar])
   extends RiakEntityDAO[String, Guitar](storageDriver) with Converter[Guitar] {
@@ -94,8 +94,6 @@ class GuitarDAO(storageDriver: RiakStorageDriver[String, Guitar])
 
   def toDomain(riakObject: IRiakObject) = {
     val data = riakObject.getValueAsString()
-    val guitar = parse[Guitar](data)
-    guitar.id = riakObject.getKey()
-    guitar
+    parse[Guitar](data)
   }
 }
