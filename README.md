@@ -30,7 +30,8 @@ class GuitarDAO(storageDriver: RiakStorageDriver[String, Guitar])
     val data = riakObject.getValueAsString()
     parse[Guitar](data)
   }
-}```
+}
+```
 
 Examples
 --------
