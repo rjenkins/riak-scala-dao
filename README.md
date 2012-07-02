@@ -9,9 +9,10 @@ Requirements
 * Scala 2.8.2 or 2.9.1
 
 Extending RiakEntityDAO
------------------------
+----------------------_
 
-```class GuitarDAO(storageDriver: RiakStorageDriver[String, Guitar])
+```
+class GuitarDAO(storageDriver: RiakStorageDriver[String, Guitar])
   extends RiakEntityDAO[String, Guitar](storageDriver) with Converter[Guitar] {
 
   def fromDomain(guitar: Guitar, vClock: VClock): IRiakObject = {
