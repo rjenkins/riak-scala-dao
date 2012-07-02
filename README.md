@@ -6,10 +6,10 @@ riak-scala-dao
 Requirements
 ------------
 
-* Scala 2.8.2 or 2.9.1
+*Scala 2.8.2 or 2.9.1*
 
 Extending RiakEntityDAO
-----------------------_
+----------------------
 
 ```scala
 class GuitarDAO(storageDriver: RiakStorageDriver[String, Guitar])
@@ -40,27 +40,31 @@ val riakClient: IRiakClient = RiakFactory.pbcClient("localhost", 8087)
 val guitarDao = new GuitarDAO(new RiakDriver[Guitar]("guitars", riakClient))
 ```
 
-* Saving *
+Saving
+------
 ```scala
 val jazzMaster = new Guitar("1", "fender", "JazzMaster", 1963)
 guitarDao.persist(jazzMaster.id, jazzMaster)
 ```
 
-* Retreiving *
+Retreiving
+----------
 ```scala
 val jazzMaster = new Guitar("1", "fender", "JazzMaster", 1963)
 guitarDao.persist(jazzMaster.id, jazzMaster)
 guitarDao.getByKey("1")
 ```
 
-* Deleting *
+Deleting
+--------
 ```scala
 val jazzMaster = new Guitar("1", "fender", "JazzMaster", 1963)
 guitarDao.persist(jazzMaster.id, jazzMaster)
 guitarDao.deleteByKey("1")
 ```
 
-* Secondary Indexing *
+Secondary Indexing
+------------------
 
 ```scala
 val jazzMaster = new Guitar("1", "fender", "JazzMaster", 1963)
