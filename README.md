@@ -9,7 +9,7 @@ Requirements
 *Scala 2.8.2 or 2.9.1*
 
 Extending RiakEntityDAO
-----------------------
+-----------------------
 
 ```scala
 class GuitarDAO(storageDriver: RiakStorageDriver[String, Guitar])
