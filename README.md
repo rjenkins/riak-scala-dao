@@ -6,8 +6,8 @@ riak-scala-dao
 Requirements
 ------------
 
-*Scala 2.8.2 or 2.9.1*
-*riak-java-client 1.0.5*
+* Scala 2.8.2 or 2.9.1
+* riak-java-client 1.0.5
 
 Extending RiakEntityDAO
 -----------------------
