@@ -37,6 +37,7 @@ class RiakDriver[T](bucket: String,
                     riakClient: IRiakClient) extends RiakStorageDriver[String, T] with Logging {
 
   def getByKey(key: String, converter: Converter[T]): Option[T] = {
+
     val data: IRiakObject = getBucket.fetch(key).execute()
     if (data != null)
       new Some(converter.toDomain(data))

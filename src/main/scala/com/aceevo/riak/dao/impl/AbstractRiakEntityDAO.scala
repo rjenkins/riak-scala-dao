@@ -17,9 +17,9 @@
 package com.aceevo.riak.dao.impl
 
 import com.codahale.logula.Logging
-import com.basho.riak.client.convert.Converter
 import com.aceevo.riak.driver.RiakStorageDriver
-import com.aceevo.riak.dao.GenericRiakEntityDAO
+import com.aceevo.riak.dao.RiakEntityDAO
+import com.basho.riak.client.convert.Converter
 
 
 /**
@@ -31,7 +31,8 @@ import com.aceevo.riak.dao.GenericRiakEntityDAO
  */
 
 
-abstract class RiakEntityDAO[K, T](storageDriver: RiakStorageDriver[K, T]) extends GenericRiakEntityDAO[K, T]
+abstract class AbstractRiakEntityDAO[K, T](bucket: String, storageDriver: RiakStorageDriver[K,
+  T]) extends RiakEntityDAO[K, T]
 with Logging with Converter[T] {
 
   // Retrieve Entity by Key
@@ -60,3 +61,8 @@ with Logging with Converter[T] {
     storageDriver.deleteFor2i(index)
   }
 }
+
+
+
+
+

@@ -15,6 +15,9 @@
 //
 
 package com.aceevo.riak.dao
+
+import com.aceevo.riak.model.PersistentEntity
+
 /**
  * Created with IntelliJ IDEA.
  * User: rjenkins
@@ -23,9 +26,10 @@ package com.aceevo.riak.dao
  * To change this template use File | Settings | File Templates.
  */
 
-trait GenericRiakEntityDAO[K, T] {
 
-  def persist(key: K, t: T): T
+trait RiakEntityDAO[K, T] {
+
+def persist(key: K, t: T): T
   def deleteByKey(key: K)
   def delete(t: T)
 

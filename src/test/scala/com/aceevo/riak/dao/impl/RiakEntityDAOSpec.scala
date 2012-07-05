@@ -26,15 +26,15 @@ package com.aceevo.riak.dao.impl
 
 import com.codahale.simplespec.Spec
 import com.aceevo.riak.driver.impl.RiakDriver
-import com.basho.riak.client.convert.Converter
-import com.basho.riak.client.cap.VClock
-import com.basho.riak.client.builders.RiakObjectBuilder
 import com.aceevo.riak.driver.RiakStorageDriver
-import com.codahale.jerkson.Json._
-import com.basho.riak.client.{RiakFactory, IRiakClient, IRiakObject}
 import org.junit.Test
 import com.codahale.logula.Logging
+import com.basho.riak.client.cap.VClock
+import com.basho.riak.client.{IRiakObject, RiakFactory, IRiakClient}
+import com.basho.riak.client.builders.RiakObjectBuilder
 import com.basho.riak.client.http.util.Constants
+import com.codahale.jerkson.Json._
+import com.basho.riak.client.convert.Converter
 
 ;
 
@@ -49,7 +49,8 @@ import com.basho.riak.client.http.util.Constants
 class RiakEntityDAOSpec extends Spec with Logging {
 
   val riakClient: IRiakClient = RiakFactory.pbcClient("localhost", 8087)
-  val guitarDao = new GuitarDAO(new RiakDriver[Guitar]("guitars", riakClient))
+  val guitarDao = new GuitarDAO("guitars", new RiakDriver[Guitar]("guitars",
+    riakClient))
 
   class `riakEntityDAOSpecTest` {
     @Test def `can persist entity`() {
@@ -92,10 +93,11 @@ class RiakEntityDAOSpec extends Spec with Logging {
 
 }
 
-case class Guitar(var id: String, make: String, val model: String, val year: Int) {}
+case class Guitar(var id: String, make: String, model: String, year: Int) {}
 
-class GuitarDAO(storageDriver: RiakStorageDriver[String, Guitar])
-  extends RiakEntityDAO[String, Guitar](storageDriver) with Converter[Guitar] {
+
+class GuitarDAO(bucket: String, storageDriver: RiakStorageDriver[String, Guitar])
+  extends AbstractRiakEntityDAO[String, Guitar]("guitars", storageDriver) with Converter[Guitar] {
 
   def fromDomain(guitar: Guitar, vClock: VClock): IRiakObject = {
     val dataAsString = generate(guitar)
@@ -109,7 +111,7 @@ class GuitarDAO(storageDriver: RiakStorageDriver[String, Guitar])
   }
 
   def toDomain(riakObject: IRiakObject) = {
-    val data = riakObject.getValueAsString()
+    val data = riakObject.getValueAsString
     parse[Guitar](data)
   }
 }
