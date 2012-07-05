@@ -9,12 +9,14 @@ Requirements
 * Scala 2.8.2 or 2.9.1
 * riak-java-client 1.0.5
 
-Extending RiakEntityDAO
------------------------
+Extending AbstractRiakEntityDAO
+-------------------------------
 
 ```scala
-class GuitarDAO(storageDriver: RiakStorageDriver[String, Guitar])
-  extends RiakEntityDAO[String, Guitar](storageDriver) with Converter[Guitar] {
+case class Guitar(var id: String, make: String, model: String, year: Int) {}
+
+class GuitarDAO(bucket: String, storageDriver: RiakStorageDriver[String, Guitar])
+  extends AbstractRiakEntityDAO[String, Guitar]("guitars", storageDriver) with Converter[Guitar] {
 
   def fromDomain(guitar: Guitar, vClock: VClock): IRiakObject = {
     val dataAsString = generate(guitar)
@@ -28,7 +30,7 @@ class GuitarDAO(storageDriver: RiakStorageDriver[String, Guitar])
   }
 
   def toDomain(riakObject: IRiakObject) = {
-    val data = riakObject.getValueAsString()
+    val data = riakObject.getValueAsString
     parse[Guitar](data)
   }
 }
