@@ -54,7 +54,7 @@ class InMemoryDriver[T] extends RiakStorageDriver[String, T] with Logging {
     map.remove(key)
   }
 
-  def findFor2i(index: (String, String), converter: Converter[T]) = {
+  def findFor2iString(index: (String, String), converter: Converter[T]) = {
     val items = new ListBuffer[T]
     for (value <- map.values) {
       if (value.toString.contains(index._2))
@@ -63,6 +63,20 @@ class InMemoryDriver[T] extends RiakStorageDriver[String, T] with Logging {
 
     items.toList
   }
+
+  def findFor2iInt(index: (String, Int), converter: Converter[T]) = {
+    val items = new ListBuffer[T]
+    for (value <- map.values) {
+      if (value.toString.contains(index._2))
+        items.prepend(value)
+    }
+
+    items.toList
+  }
+
+  def deleteFor2iString(index: (String, String)) {}
+
+  def deleteFor2iInt(index: (String, Int)) {}
 
   def deleteFor2i(index: (String, String)) = {
 
@@ -77,4 +91,6 @@ class InMemoryDriver[T] extends RiakStorageDriver[String, T] with Logging {
     }
 
   }
+
+  def getBucket = { "" }
 }

@@ -36,8 +36,6 @@ import com.basho.riak.client.http.util.Constants
 import com.codahale.jerkson.Json._
 import com.basho.riak.client.convert.Converter
 
-;
-
 /**
  * Created with IntelliJ IDEA.
  * User: rjenkins
@@ -46,13 +44,13 @@ import com.basho.riak.client.convert.Converter
  * To change this template use File | Settings | File Templates.
  */
 
-class RiakEntityDAOSpec extends Spec with Logging {
+class AbstractRiakEntityDAOSpec extends Spec with Logging {
 
   val riakClient: IRiakClient = RiakFactory.pbcClient("localhost", 8087)
-  val guitarDao = new GuitarDAO("guitars", new RiakDriver[Guitar]("guitars",
+  val guitarDao = new GuitarDAO(new RiakDriver[Guitar]("guitars",
     riakClient))
 
-  class `riakEntityDAOSpecTest` {
+  class `abstractRiakEntityDAOSpecTest` {
     @Test def `can persist entity`() {
 
       val jazzMaster = new Guitar("1", "fender", "JazzMaster", 1963)
@@ -74,39 +72,37 @@ class RiakEntityDAOSpec extends Spec with Logging {
       guitarDao.getByKey(jazzMaster.id) must be(None)
     }
 
-    @Test def `can find for 2i`() {
+    @Test def `can find for 2iString`() {
 
       val jazzMaster = new Guitar("1", "fender", "JazzMaster", 1963)
       guitarDao.persist(jazzMaster.id, jazzMaster)
-      guitarDao.findFor2i("make", "fender").size must be(1)
+      guitarDao.findFor2iString("make", "fender").size must be(1)
     }
 
-    @Test def `can delete for 2i`() {
+    @Test def `can delete for 2iString`() {
 
       val jazzMaster = new Guitar("1", "fender", "JazzMaster", 1963)
       guitarDao.persist(jazzMaster.id, jazzMaster)
-      guitarDao.deleteAllFor2i("make", "fender")
-      guitarDao.findFor2i("make", "fender").size must be(0)
+      guitarDao.deleteFor2iString("make", "fender")
+      guitarDao.findFor2iString("make", "fender").size must be(0)
     }
 
   }
 
 }
 
-case class Guitar(var id: String, make: String, model: String, year: Int) {}
+case class Guitar(id: String, make: String, model: String, year: Int) {}
 
-
-class GuitarDAO(bucket: String, storageDriver: RiakStorageDriver[String, Guitar])
-  extends AbstractRiakEntityDAO[String, Guitar]("guitars", storageDriver) with Converter[Guitar] {
+class GuitarDAO(storageDriver: RiakStorageDriver[String, Guitar])
+  extends AbstractRiakEntityDAO[String, Guitar](storageDriver) with Converter[Guitar] {
 
   def fromDomain(guitar: Guitar, vClock: VClock): IRiakObject = {
     val dataAsString = generate(guitar)
     val data = (dataAsString).map(_.toChar).toCharArray.map(_.toByte)
 
-    val iRiakObject = RiakObjectBuilder.newBuilder("guitars", guitar.id).withVClock(vClock)
+    RiakObjectBuilder.newBuilder("guitars", guitar.id).withVClock(vClock)
       .withContentType(Constants.CTYPE_JSON)
-      .withValue(data).build()
-    iRiakObject.addIndex("make", guitar.make)
+      .withValue(data).addIndex("make", guitar.make).build()
 
   }
 

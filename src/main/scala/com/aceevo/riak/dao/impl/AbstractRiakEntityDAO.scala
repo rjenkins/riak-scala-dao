@@ -20,6 +20,8 @@ import com.codahale.logula.Logging
 import com.aceevo.riak.driver.RiakStorageDriver
 import com.aceevo.riak.dao.RiakEntityDAO
 import com.basho.riak.client.convert.Converter
+import scala.Option
+import collection.mutable.ListBuffer
 
 
 /**
@@ -31,9 +33,12 @@ import com.basho.riak.client.convert.Converter
  */
 
 
-abstract class AbstractRiakEntityDAO[K, T](bucket: String, storageDriver: RiakStorageDriver[K,
+abstract class AbstractRiakEntityDAO[K, T](storageDriver: RiakStorageDriver[K,
   T]) extends RiakEntityDAO[K, T]
 with Logging with Converter[T] {
+
+  val stringIndexes = new ListBuffer[String]
+  val integerIndexes = new ListBuffer[String]
 
   // Retrieve Entity by Key
   def getByKey(key: K): Option[T] = {
@@ -45,8 +50,12 @@ with Logging with Converter[T] {
     storageDriver.persist(key, t, this)
   }
 
-  def findFor2i(index: (String, String)): List[T] = {
-    storageDriver.findFor2i(index, this)
+  def findFor2iString(index: (String, String)): List[T] = {
+    storageDriver.findFor2iString(index, this)
+  }
+
+  def findFor2iInt(index: (String, Int)): List[T] = {
+    storageDriver.findFor2iInt(index, this)
   }
 
   def delete(t: T): Unit = {
@@ -57,8 +66,28 @@ with Logging with Converter[T] {
     storageDriver.deleteByKey(key)
   }
 
-  def deleteAllFor2i(index: (String, String)) {
-    storageDriver.deleteFor2i(index)
+  def deleteFor2iString(index: (String, String)) {
+    storageDriver.deleteFor2iString(index)
+  }
+
+  def deleteFor2iInt(index: (String, Int)) {
+    storageDriver.deleteFor2iInt(index)
+  }
+
+  def addStringIndex(index: String): Unit = {
+    stringIndexes.prepend(index)
+  }
+
+  def addIntegerIndex(index: String): Unit = {
+    integerIndexes.prepend(index)
+  }
+
+  def removeStringIndex(index: String): String = {
+    stringIndexes.readOnly(stringIndexes.indexOf(index))
+  }
+
+  def removeIntegerIndex(index: String): String = {
+    integerIndexes.readOnly(integerIndexes.indexOf(index))
   }
 }
 

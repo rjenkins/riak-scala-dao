@@ -18,12 +18,12 @@ package com.aceevo.riak.driver.impl
 
 import com.basho.riak.client.{IRiakObject, IRiakClient}
 import com.basho.riak.client.bucket.Bucket
-import com.basho.riak.client.query.indexes.BinIndex
-import collection.mutable.ListBuffer
 import com.codahale.logula.Logging
 import com.basho.riak.client.convert.Converter
-import collection.JavaConversions._
+import scala.collection.JavaConversions._
+import scala.collection.mutable.ListBuffer
 import com.aceevo.riak.driver.RiakStorageDriver
+import com.basho.riak.client.query.indexes.{IntIndex, BinIndex}
 
 /**
  * Created with IntelliJ IDEA.
@@ -38,7 +38,7 @@ class RiakDriver[T](bucket: String,
 
   def getByKey(key: String, converter: Converter[T]): Option[T] = {
 
-    val data: IRiakObject = getBucket.fetch(key).execute()
+    val data: IRiakObject = fetchBucket.fetch(key).execute()
     if (data != null)
       new Some(converter.toDomain(data))
     else
@@ -47,41 +47,63 @@ class RiakDriver[T](bucket: String,
   }
 
   def persist(key: String, t: T, converter: Converter[T]): T = {
-    getBucket.store(key, t).withConverter(converter).returnBody(true).execute()
+    fetchBucket.store(key, t).withConverter(converter).returnBody(true).execute()
   }
 
   def delete(t: T) {
-    getBucket.delete(t).execute()
+    fetchBucket.delete(t).execute()
   }
 
   def deleteByKey(key: String) {
-    getBucket.delete(key).execute()
+    fetchBucket.delete(key).execute()
+  }
+
+  def findFor2iString(index: (String, String), converter: Converter[T]): List[T] = {
+    get2iResults(getStringKeys(index), converter);
+  }
+
+  def findFor2iInt(index: (String, Int), converter: Converter[T]): List[T] = {
+    get2iResults(getIntKeys(index), converter);
+  }
+
+  def deleteFor2iString(index: (String, String)) {
+    delete2iResults(getStringKeys(index))
+  }
+
+  def deleteFor2iInt(index: (String, Int)) {
+    delete2iResults(getIntKeys(index))
   }
 
   // Find all records of Type T for Matching 2i query
-  def findFor2i(index: (String, String), converter: Converter[T]): List[T] = {
+  private def getIntKeys(index: (String, Int)): List[String] = {
+    fetchBucket.fetchIndex(IntIndex.named(index._1)).withValue(index._2).execute().toList
+  }
 
-    val keys = getBucket.fetchIndex(BinIndex.named(index._1)).withValue(index._2).execute()
+  // Find all records of Type T for Matching 2i query
+  private def getStringKeys(index: (String, String)): List[String] = {
+    fetchBucket.fetchIndex(BinIndex.named(index._1)).withValue(index._2).execute().toList
+  }
+
+  private def get2iResults(keys: List[String], converter: Converter[T]): List[T] = {
+
     val listBuffer = new ListBuffer[T]
-
     for (key <- keys) {
-      listBuffer.prepend(converter.toDomain(getBucket.fetch(key).execute()))
+      listBuffer.prepend(converter.toDomain(fetchBucket.fetch(key).execute()))
     }
 
     listBuffer.toList
   }
 
-  def deleteFor2i(index: (String, String)) {
-
-    val keys = getBucket.fetchIndex(BinIndex.named(index._1)).withValue(index._2).execute()
-
+  private def delete2iResults(keys: List[String]) {
     for (key <- keys) {
-      getBucket.delete(key).execute()
+      fetchBucket.delete(key).execute()
     }
   }
 
+  def getBucket = bucket
+
   // Utility method to retrieve a bucket
-  private def getBucket: Bucket = {
+  private def fetchBucket: Bucket = {
     riakClient.fetchBucket(bucket).execute();
   }
 

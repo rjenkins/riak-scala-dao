@@ -23,6 +23,8 @@ import com.basho.riak.client.IRiakObject
 import com.codahale.jerkson.Json._
 import com.aceevo.riak.driver.RiakStorageDriver
 import com.aceevo.riak.model.PersistentEntity
+import collection.mutable.ListBuffer
+import com.basho.riak.client.query.indexes.RiakIndexes
 
 /**
  * Created with IntelliJ IDEA.
@@ -32,18 +34,51 @@ import com.aceevo.riak.model.PersistentEntity
  * To change this template use File | Settings | File Templates.
  */
 
-class RiakJSONEntityDAO[K, T <: PersistentEntity](bucket: String,
-                                                  storageDriver: RiakStorageDriver[K, T])(implicit mf: Manifest[T])
-  extends AbstractRiakEntityDAO[K, T](bucket: String, storageDriver: RiakStorageDriver[K,
+class RiakJSONEntityDAO[K, T <: PersistentEntity](storageDriver: RiakStorageDriver[K, T])(implicit mf: Manifest[T])
+  extends AbstractRiakEntityDAO[K, T](storageDriver: RiakStorageDriver[K,
     T]) {
+
 
   def fromDomain(t: T, vClock: VClock): IRiakObject = {
     val dataAsString = generate(t)
     val data = (dataAsString).map(_.toChar).toCharArray.map(_.toByte)
 
-    RiakObjectBuilder.newBuilder(bucket, t.id).withVClock(vClock)
+    val iRiakObject = RiakObjectBuilder.newBuilder(storageDriver.getBucket, t.getKey)
+      .withVClock(vClock)
       .withContentType(Constants.CTYPE_JSON)
-      .withValue(data).build()
+      .withValue(data)
+
+    val riakIndexes = new RiakIndexes
+
+    for (index <- stringIndexes) {
+      val field = t.getClass.getDeclaredField(index)
+      field.setAccessible(true)
+      val fieldValue = field.get(t).asInstanceOf[String]
+
+      if (fieldValue.isInstanceOf[String] == false) {
+        throw new RuntimeException("Attempting to add 2i index for field " +
+          field.getName + " : field is not a String")
+      }
+
+      riakIndexes.add(index, fieldValue)
+    }
+
+    for (index <- integerIndexes) {
+      val field = t.getClass.getDeclaredField(index)
+      field.setAccessible(true)
+      val fieldValue = field.get(t).asInstanceOf[Int]
+
+      if (fieldValue.isInstanceOf[Int] == false) {
+        throw new RuntimeException("Attempting to add 2i index for field " +
+          field.getName + " : field is not a Int")
+      }
+
+      riakIndexes.add(index, fieldValue)
+    }
+
+    iRiakObject.withIndexes(riakIndexes)
+
+    iRiakObject.build()
   }
 
   def toDomain(riakObject: IRiakObject) = {

@@ -16,8 +16,6 @@
 
 package com.aceevo.riak.dao
 
-import com.aceevo.riak.model.PersistentEntity
-
 /**
  * Created with IntelliJ IDEA.
  * User: rjenkins
@@ -29,7 +27,7 @@ import com.aceevo.riak.model.PersistentEntity
 
 trait RiakEntityDAO[K, T] {
 
-def persist(key: K, t: T): T
+  def persist(key: K, t: T): T
   def deleteByKey(key: K)
   def delete(t: T)
 
