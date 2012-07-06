@@ -58,11 +58,11 @@ with Logging with Converter[T] {
     storageDriver.findFor2iInt(index, this)
   }
 
-  def delete(t: T): Unit = {
+  def delete(t: T) {
     storageDriver.delete(t)
   }
 
-  def deleteByKey(key: K) = {
+  def deleteByKey(key: K) {
     storageDriver.deleteByKey(key)
   }
 
@@ -74,11 +74,11 @@ with Logging with Converter[T] {
     storageDriver.deleteFor2iInt(index)
   }
 
-  def addStringIndex(index: String): Unit = {
+  def addStringIndex(index: String) {
     stringIndexes.prepend(index)
   }
 
-  def addIntegerIndex(index: String): Unit = {
+  def addIntegerIndex(index: String) {
     integerIndexes.prepend(index)
   }
 

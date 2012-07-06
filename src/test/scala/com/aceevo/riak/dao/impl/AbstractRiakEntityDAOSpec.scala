@@ -35,6 +35,7 @@ import com.basho.riak.client.builders.RiakObjectBuilder
 import com.basho.riak.client.http.util.Constants
 import com.codahale.jerkson.Json._
 import com.basho.riak.client.convert.Converter
+import com.aceevo.riak.model.PersistentEntity
 
 /**
  * Created with IntelliJ IDEA.
@@ -90,7 +91,6 @@ class AbstractRiakEntityDAOSpec extends Spec with Logging {
   }
 
 }
-
 case class Guitar(id: String, make: String, model: String, year: Int) {}
 
 class GuitarDAO(storageDriver: RiakStorageDriver[String, Guitar])

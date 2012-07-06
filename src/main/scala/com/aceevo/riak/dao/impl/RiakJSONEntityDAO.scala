@@ -48,6 +48,7 @@ class RiakJSONEntityDAO[K, T <: PersistentEntity](storageDriver: RiakStorageDriv
       .withContentType(Constants.CTYPE_JSON)
       .withValue(data)
 
+
     val riakIndexes = new RiakIndexes
 
     for (index <- stringIndexes) {
