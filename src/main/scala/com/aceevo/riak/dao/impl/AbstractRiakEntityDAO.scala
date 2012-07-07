@@ -83,11 +83,11 @@ with Logging with Converter[T] {
   }
 
   def removeStringIndex(index: String): String = {
-    stringIndexes.readOnly(stringIndexes.indexOf(index))
+    stringIndexes.remove(stringIndexes.indexOf(index))
   }
 
   def removeIntegerIndex(index: String): String = {
-    integerIndexes.readOnly(integerIndexes.indexOf(index))
+    integerIndexes.remove(integerIndexes.indexOf(index))
   }
 }
 
