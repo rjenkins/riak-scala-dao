@@ -35,7 +35,6 @@ import com.basho.riak.client.builders.RiakObjectBuilder
 import com.basho.riak.client.http.util.Constants
 import com.codahale.jerkson.Json._
 import com.basho.riak.client.convert.Converter
-import com.aceevo.riak.model.PersistentEntity
 
 /**
  * Created with IntelliJ IDEA.
@@ -83,9 +82,14 @@ class AbstractRiakEntityDAOSpec extends Spec with Logging {
     @Test def `can delete for 2iString`() {
 
       val jazzMaster = new Guitar("1", "fender", "JazzMaster", 1963)
+      val gibson = new Guitar("2", "gibson", "LesPaul", 1963)
+
       guitarDao.persist(jazzMaster.id, jazzMaster)
+      guitarDao.persist(gibson.id, gibson)
       guitarDao.deleteFor2iString("make", "fender")
       guitarDao.findFor2iString("make", "fender").size must be(0)
+      guitarDao.findFor2iString("make", "gibson").size must be(1)
+
     }
 
   }
