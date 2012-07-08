@@ -44,6 +44,27 @@ import com.basho.riak.client.convert.Converter
  * To change this template use File | Settings | File Templates.
  */
 
+case class Guitar(id: String, make: String, model: String, year: Int) {}
+
+class GuitarDAO(storageDriver: RiakStorageDriver[String, Guitar])
+  extends AbstractRiakEntityDAO[String, Guitar](storageDriver) with Converter[Guitar] {
+
+  def fromDomain(guitar: Guitar, vClock: VClock): IRiakObject = {
+    val dataAsString = generate(guitar)
+    val data = (dataAsString).map(_.toChar).toCharArray.map(_.toByte)
+
+    RiakObjectBuilder.newBuilder("guitars", guitar.id).withVClock(vClock)
+      .withContentType(Constants.CTYPE_JSON)
+      .withValue(data).addIndex("make", guitar.make).build()
+
+  }
+
+  def toDomain(riakObject: IRiakObject) = {
+    val data = riakObject.getValueAsString
+    parse[Guitar](data)
+  }
+}
+
 class AbstractRiakEntityDAOSpec extends Spec with Logging {
 
   val riakClient: IRiakClient = RiakFactory.pbcClient("localhost", 8087)
@@ -89,29 +110,12 @@ class AbstractRiakEntityDAOSpec extends Spec with Logging {
       guitarDao.deleteFor2iString("make", "fender")
       guitarDao.findFor2iString("make", "fender").size must be(0)
       guitarDao.findFor2iString("make", "gibson").size must be(1)
+      guitarDao.deleteFor2iString("make", "gibson")
+      guitarDao.findFor2iString("make", "gibson").size must be(0)
 
     }
 
   }
 
 }
-case class Guitar(id: String, make: String, model: String, year: Int) {}
 
-class GuitarDAO(storageDriver: RiakStorageDriver[String, Guitar])
-  extends AbstractRiakEntityDAO[String, Guitar](storageDriver) with Converter[Guitar] {
-
-  def fromDomain(guitar: Guitar, vClock: VClock): IRiakObject = {
-    val dataAsString = generate(guitar)
-    val data = (dataAsString).map(_.toChar).toCharArray.map(_.toByte)
-
-    RiakObjectBuilder.newBuilder("guitars", guitar.id).withVClock(vClock)
-      .withContentType(Constants.CTYPE_JSON)
-      .withValue(data).addIndex("make", guitar.make).build()
-
-  }
-
-  def toDomain(riakObject: IRiakObject) = {
-    val data = riakObject.getValueAsString
-    parse[Guitar](data)
-  }
-}

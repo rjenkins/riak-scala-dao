@@ -15,6 +15,8 @@ import com.aceevo.riak.model.PersistentEntity
  * To change this template use File | Settings | File Templates.
  */
 
+case class Skateboard(id: String, brand: String, model: String, year: Int) extends PersistentEntity { def getKey=id }
+
 class RiakJSONEntityDAOSpec extends Spec with Logging {
 
   val riakClient: IRiakClient = RiakFactory.pbcClient("localhost", 8087)
@@ -63,5 +65,4 @@ class RiakJSONEntityDAOSpec extends Spec with Logging {
   }
 }
 
-case class Skateboard(id: String, brand: String, model: String, year: Int) extends PersistentEntity { def getKey=id }
 

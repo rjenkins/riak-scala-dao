@@ -23,7 +23,6 @@ import com.basho.riak.client.IRiakObject
 import com.codahale.jerkson.Json._
 import com.aceevo.riak.driver.RiakStorageDriver
 import com.aceevo.riak.model.PersistentEntity
-import collection.mutable.ListBuffer
 import com.basho.riak.client.query.indexes.RiakIndexes
 
 /**
@@ -41,12 +40,12 @@ class RiakJSONEntityDAO[K, T <: PersistentEntity](storageDriver: RiakStorageDriv
 
   def fromDomain(t: T, vClock: VClock): IRiakObject = {
     val dataAsString = generate(t)
-    val data = (dataAsString).map(_.toChar).toCharArray.map(_.toByte)
+    //val data = (dataAsString).map(_.toChar).toCharArray.map(_.toByte)
 
     val iRiakObject = RiakObjectBuilder.newBuilder(storageDriver.getBucket, t.getKey)
       .withVClock(vClock)
       .withContentType(Constants.CTYPE_JSON)
-      .withValue(data)
+      .withValue(dataAsString)
 
 
     val riakIndexes = new RiakIndexes
