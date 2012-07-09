@@ -90,3 +90,10 @@ val jazzMaster = new Guitar("1", "fender", "JazzMaster", 1963)
 guitarDao.persist(jazzMaster.id, jazzMaster)
 guitarDao.findFor2i("make", "fender")
 ```
+
+License
+-------
+
+Copyright (c) 2012 Ray Jenkins
+
+Published under The Apache License, Version 2.0, see LICENSE
