@@ -58,30 +58,30 @@ class RiakDriver[T](bucket: String,
     fetchBucket.delete(key).execute()
   }
 
-  def findFor2iString(index: (String, String), converter: Converter[T]): List[T] = {
-    get2iResults(getStringKeys(index), converter);
+  def findFor2i(index: String, value: String, converter: Converter[T]): List[T] = {
+    get2iResults(getStringKeys(index, value), converter)
   }
 
-  def findFor2iInt(index: (String, Int), converter: Converter[T]): List[T] = {
-    get2iResults(getIntKeys(index), converter);
+  def findFor2i(index: String, value: Int, converter: Converter[T]): List[T] = {
+    get2iResults(getIntKeys(index, value), converter)
   }
 
-  def deleteFor2iString(index: (String, String)) {
-    delete2iResults(getStringKeys(index))
+  def deleteFor2i(index: String, value: String) {
+    delete2iResults(getStringKeys(index, value))
   }
 
-  def deleteFor2iInt(index: (String, Int)) {
-    delete2iResults(getIntKeys(index))
-  }
-
-  // Find all records of Type T for Matching 2i query
-  private def getIntKeys(index: (String, Int)): List[String] = {
-    fetchBucket.fetchIndex(IntIndex.named(index._1)).withValue(index._2).execute().toList
+  def deleteFor2i(index: String, value: Int) {
+    delete2iResults(getIntKeys(index, value))
   }
 
   // Find all records of Type T for Matching 2i query
-  private def getStringKeys(index: (String, String)): List[String] = {
-    fetchBucket.fetchIndex(BinIndex.named(index._1)).withValue(index._2).execute().toList
+  private def getIntKeys(index: String, value: Int): List[String] = {
+    fetchBucket.fetchIndex(IntIndex.named(index)).withValue(value).execute().toList
+  }
+
+  // Find all records of Type T for Matching 2i query
+  private def getStringKeys(index: String, value: String): List[String] = {
+    fetchBucket.fetchIndex(BinIndex.named(index)).withValue(value).execute().toList
   }
 
   private def get2iResults(keys: List[String], converter: Converter[T]): List[T] = {
@@ -104,7 +104,7 @@ class RiakDriver[T](bucket: String,
 
   // Utility method to retrieve a bucket
   private def fetchBucket: Bucket = {
-    riakClient.fetchBucket(bucket).execute();
+    riakClient.fetchBucket(bucket).execute()
   }
 
 }

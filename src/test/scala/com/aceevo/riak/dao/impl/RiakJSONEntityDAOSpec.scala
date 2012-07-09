@@ -50,16 +50,16 @@ class RiakJSONEntityDAOSpec extends Spec with Logging {
 
       val skateboard = new Skateboard("1", "Real", "Justin Brock", 2012)
       skateboardDao.persist(skateboard.id, skateboard)
-      skateboardDao.findFor2iString("brand", "Real").size must be(1)
+      skateboardDao.findFor2i("brand", "Real").size must be(1)
     }
 
     @Test def `can delete for 2iString`() {
 
       val skateboard = new Skateboard("1", "Real", "Justin Brock", 2012)
       skateboardDao.persist(skateboard.id, skateboard)
-      skateboardDao.findFor2iString("brand", "Real").size must be(1)
-      skateboardDao.deleteFor2iString("brand", "Real")
-      skateboardDao.findFor2iString("brand", "Real").size must be(0)
+      skateboardDao.findFor2i("brand", "Real").size must be(1)
+      skateboardDao.deleteFor2i("brand", "Real")
+      skateboardDao.findFor2i("brand", "Real").size must be(0)
     }
 
   }

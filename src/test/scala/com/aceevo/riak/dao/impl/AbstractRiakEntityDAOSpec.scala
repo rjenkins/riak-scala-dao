@@ -97,7 +97,7 @@ class AbstractRiakEntityDAOSpec extends Spec with Logging {
 
       val jazzMaster = new Guitar("1", "fender", "JazzMaster", 1963)
       guitarDao.persist(jazzMaster.id, jazzMaster)
-      guitarDao.findFor2iString("make", "fender").size must be(1)
+      guitarDao.findFor2i("make", "fender").size must be(1)
     }
 
     @Test def `can delete for 2iString`() {
@@ -107,11 +107,11 @@ class AbstractRiakEntityDAOSpec extends Spec with Logging {
 
       guitarDao.persist(jazzMaster.id, jazzMaster)
       guitarDao.persist(gibson.id, gibson)
-      guitarDao.deleteFor2iString("make", "fender")
-      guitarDao.findFor2iString("make", "fender").size must be(0)
-      guitarDao.findFor2iString("make", "gibson").size must be(1)
-      guitarDao.deleteFor2iString("make", "gibson")
-      guitarDao.findFor2iString("make", "gibson").size must be(0)
+      guitarDao.deleteFor2i("make", "fender")
+      guitarDao.findFor2i("make", "fender").size must be(0)
+      guitarDao.findFor2i("make", "gibson").size must be(1)
+      guitarDao.deleteFor2i("make", "gibson")
+      guitarDao.findFor2i("make", "gibson").size must be(0)
 
     }
 

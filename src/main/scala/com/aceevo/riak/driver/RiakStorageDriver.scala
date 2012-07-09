@@ -31,9 +31,9 @@ trait RiakStorageDriver[K, T] {
   def deleteByKey(key: K)
   def getByKey(key: K, converter: Converter[T]): Option[T]
   def persist(key: K, t: T, converter: Converter[T]): T
-  def findFor2iString(index: (String, String), converter: Converter[T]): List[T]
-  def findFor2iInt(index: (String, Int), converter: Converter[T]): List[T]
-  def deleteFor2iString(index: (String, String))
-  def deleteFor2iInt(index: (String, Int))
+  def findFor2i(index: String, value: String, converter: Converter[T]): List[T]
+  def findFor2i(index: String, value: Int, converter: Converter[T]): List[T]
+  def deleteFor2i(index: String, value: String)
+  def deleteFor2i(index: String, value: Int)
   def getBucket : String
 }

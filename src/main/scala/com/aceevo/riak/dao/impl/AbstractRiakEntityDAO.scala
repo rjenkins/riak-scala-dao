@@ -50,12 +50,12 @@ with Logging with Converter[T] {
     storageDriver.persist(key, t, this)
   }
 
-  def findFor2iString(index: (String, String)): List[T] = {
-    storageDriver.findFor2iString(index, this)
+  def findFor2i(index: String, value: String): List[T] = {
+    storageDriver.findFor2i(index, value, this)
   }
 
-  def findFor2iInt(index: (String, Int)): List[T] = {
-    storageDriver.findFor2iInt(index, this)
+  def findFor2i(index: String, value: Int): List[T] = {
+    storageDriver.findFor2i(index, value, this)
   }
 
   def delete(t: T) {
@@ -66,12 +66,12 @@ with Logging with Converter[T] {
     storageDriver.deleteByKey(key)
   }
 
-  def deleteFor2iString(index: (String, String)) {
-    storageDriver.deleteFor2iString(index)
+  def deleteFor2i(index: String, value: String) {
+    storageDriver.deleteFor2i(index, value)
   }
 
-  def deleteFor2iInt(index: (String, Int)) {
-    storageDriver.deleteFor2iInt(index)
+  def deleteFor2i(index: String, value: Int) {
+    storageDriver.deleteFor2i(index, value)
   }
 
   def addStringIndex(index: String) {

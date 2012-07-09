@@ -54,29 +54,29 @@ class InMemoryDriver[T] extends RiakStorageDriver[String, T] with Logging {
     map.remove(key)
   }
 
-  def findFor2iString(index: (String, String), converter: Converter[T]) = {
+  def findFor2i(index: String, value: String, converter: Converter[T]) = {
     val items = new ListBuffer[T]
-    for (value <- map.values) {
-      if (value.toString.contains(index._2))
-        items.prepend(value)
+    for (v <- map.values) {
+      if (v.toString.contains(value))
+        items.prepend(v)
     }
 
     items.toList
   }
 
-  def findFor2iInt(index: (String, Int), converter: Converter[T]) = {
+  def findFor2i(index: String, value: Int, converter: Converter[T]) = {
     val items = new ListBuffer[T]
-    for (value <- map.values) {
-      if (value.toString.contains(index._2))
-        items.prepend(value)
+    for (v <- map.values) {
+      if (v.toString.contains(value))
+        items.prepend(v)
     }
 
     items.toList
   }
 
-  def deleteFor2iString(index: (String, String)) {}
+  def deleteFor2i(index: String, value: String) {}
 
-  def deleteFor2iInt(index: (String, Int)) {}
+  def deleteFor2i(index: String, value: Int) {}
 
   def deleteFor2i(index: (String, String)) = {
 
