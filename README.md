@@ -1,7 +1,7 @@
 riak-scala-dao
 --------------
 
-*An implementation of the GenericDAO pattern for use with <a href="http://basho.com/">Basho's Riak</a>*
+*Reusable persistence layer for use with <a href="http://basho.com/">Basho's Riak</a>*
 
 Requirements
 ------------
