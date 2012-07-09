@@ -12,10 +12,12 @@ Requirements
 Using RiakJSONEntityDAO
 -----------------------
 ```scala
-case class Skateboard(id: String, brand: String, model: String, year: Int) extends PersistentEntity { def getKey=id }
+case class Skateboard(id: String, brand: String, model: String, year: Int)
+  extends PersistentEntity { def getKey=id }
 
 val riakClient: IRiakClient = RiakFactory.pbcClient("localhost", 8087)
-val skateboardDao = new RiakJSONEntityDAO[String, Skateboard](new RiakDriver[Skateboard]("skateboards", riakClient))
+val skateboardDao = new RiakJSONEntityDAO[String, Skateboard]
+  (new RiakDriver[Skateboard]("skateboards", riakClient))
 skateboardDao.addStringIndex("brand")
 
 val skateboard = new Skateboard("1", "Real", "Justin Brock", 2012)
