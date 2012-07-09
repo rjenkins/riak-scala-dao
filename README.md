@@ -9,6 +9,19 @@ Requirements
 * Scala 2.8.2 or 2.9.1
 * riak-java-client 1.0.5
 
+Using RiakJSONEntityDAO
+-----------------------
+```scala
+case class Skateboard(id: String, brand: String, model: String, year: Int) extends PersistentEntity { def getKey=id }
+
+val riakClient: IRiakClient = RiakFactory.pbcClient("localhost", 8087)
+val skateboardDao = new RiakJSONEntityDAO[String, Skateboard](new RiakDriver[Skateboard]("skateboards", riakClient))
+skateboardDao.addStringIndex("brand")
+
+val skateboard = new Skateboard("1", "Real", "Justin Brock", 2012)
+skateboardDao.persist(skateboard.id, skateboard)
+```
+
 Extending AbstractRiakEntityDAO
 -------------------------------
 
