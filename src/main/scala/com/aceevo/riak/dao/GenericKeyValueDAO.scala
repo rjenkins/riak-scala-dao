@@ -25,7 +25,7 @@ package com.aceevo.riak.dao
  */
 
 
-trait RiakEntityDAO[K, T] {
+trait GenericKeyValueDAO[K, T] {
 
   def persist(key: K, t: T): T
   def deleteByKey(key: K)

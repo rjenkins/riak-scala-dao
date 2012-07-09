@@ -18,7 +18,7 @@ package com.aceevo.riak.dao.impl
 
 import com.codahale.logula.Logging
 import com.aceevo.riak.driver.RiakStorageDriver
-import com.aceevo.riak.dao.RiakEntityDAO
+import com.aceevo.riak.dao.GenericKeyValueDAO
 import com.basho.riak.client.convert.Converter
 import scala.Option
 import collection.mutable.ListBuffer
@@ -34,7 +34,7 @@ import collection.mutable.ListBuffer
 
 
 abstract class AbstractRiakEntityDAO[K, T](storageDriver: RiakStorageDriver[K,
-  T]) extends RiakEntityDAO[K, T]
+  T]) extends GenericKeyValueDAO[K, T]
 with Logging with Converter[T] {
 
   val stringIndexes = new ListBuffer[String]
