@@ -54,12 +54,6 @@ class RiakJSONEntityDAO[K, T <: PersistentEntity](storageDriver: RiakStorageDriv
       val field = t.getClass.getDeclaredField(index)
       field.setAccessible(true)
       val fieldValue = field.get(t).asInstanceOf[String]
-
-      if (fieldValue.isInstanceOf[String] == false) {
-        throw new RuntimeException("Attempting to add 2i index for field " +
-          field.getName + " : field is not a String")
-      }
-
       riakIndexes.add(index, fieldValue)
     }
 
@@ -67,17 +61,10 @@ class RiakJSONEntityDAO[K, T <: PersistentEntity](storageDriver: RiakStorageDriv
       val field = t.getClass.getDeclaredField(index)
       field.setAccessible(true)
       val fieldValue = field.get(t).asInstanceOf[Int]
-
-      if (fieldValue.isInstanceOf[Int] == false) {
-        throw new RuntimeException("Attempting to add 2i index for field " +
-          field.getName + " : field is not a Int")
-      }
-
       riakIndexes.add(index, fieldValue)
     }
 
     iRiakObject.withIndexes(riakIndexes)
-
     iRiakObject.build()
   }
 
