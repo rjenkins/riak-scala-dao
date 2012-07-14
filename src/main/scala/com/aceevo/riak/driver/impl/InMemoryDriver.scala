@@ -38,16 +38,11 @@ class InMemoryDriver[T] extends RiakStorageDriver[String, T] with Logging {
   }
 
   def persist(key: String, t: T, converter: Converter[T]) = {
-    map.put(key, t)
-    t
+    map.put(key, t).get
   }
 
   def delete(t: T) {
-    for (key <- map.keySet) {
-      if (map.get(key) == t) {
-        map.remove(key)
-      }
-    }
+    map.keySet.foreach({ key => if(map.get(key) == t) map.remove(key)})
   }
 
   def deleteByKey(key: String) {
@@ -56,21 +51,13 @@ class InMemoryDriver[T] extends RiakStorageDriver[String, T] with Logging {
 
   def findFor2i(index: String, value: String, converter: Converter[T]) = {
     val items = new ListBuffer[T]
-    for (v <- map.values) {
-      if (v.toString.contains(value))
-        items.prepend(v)
-    }
-
+    map.values.foreach({ v => if(v.toString.contains(value)) items.prepend(v)})
     items.toList
   }
 
   def findFor2i(index: String, value: Int, converter: Converter[T]) = {
     val items = new ListBuffer[T]
-    for (v <- map.values) {
-      if (v.toString.contains(value))
-        items.prepend(v)
-    }
-
+    map.values.foreach(v => if (v.toString.contains(value)) items.prepend(v))
     items.toList
   }
 
@@ -81,15 +68,8 @@ class InMemoryDriver[T] extends RiakStorageDriver[String, T] with Logging {
   def deleteFor2i(index: (String, String)) = {
 
     val keys = new ListBuffer[String]
-    for (key <- map.keySet) {
-      if (map.get(key).get.toString.contains(index._2))
-        keys.prepend(key)
-    }
-
-    for (key <- keys) {
-      map.remove(key)
-    }
-
+    map.keySet.foreach(key => if (map.get(key).toString.contains(index._2)) keys.prepend(key))
+    keys.foreach(map.remove(_))
   }
 
   def getBucket = { "" }

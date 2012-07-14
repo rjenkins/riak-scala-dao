@@ -87,17 +87,12 @@ class RiakDriver[T](bucket: String,
   private def get2iResults(keys: List[String], converter: Converter[T]): List[T] = {
 
     val listBuffer = new ListBuffer[T]
-    for (key <- keys) {
-      listBuffer.prepend(converter.toDomain(fetchBucket.fetch(key).execute()))
-    }
-
+    keys.foreach({ key => listBuffer.prepend(converter.toDomain(fetchBucket.fetch(key).execute()))})
     listBuffer.toList
   }
 
   private def delete2iResults(keys: List[String]) {
-    for (key <- keys) {
-      fetchBucket.delete(key).execute()
-    }
+    keys.foreach(fetchBucket.delete(_).execute())
   }
 
   def getBucket = bucket
