@@ -51,11 +51,11 @@ class GuitarDAO(storageDriver: RiakStorageDriver[String, Guitar])
 
   def fromDomain(guitar: Guitar, vClock: VClock): IRiakObject = {
     val dataAsString = generate(guitar)
-    val data = (dataAsString).map(_.toChar).toCharArray.map(_.toByte)
+    //val data = (dataAsString).map(_.toChar).toCharArray.map(_.toByte)
 
     RiakObjectBuilder.newBuilder("guitars", guitar.id).withVClock(vClock)
       .withContentType(Constants.CTYPE_JSON)
-      .withValue(data).addIndex("make", guitar.make).build()
+      .withValue(dataAsString).addIndex("make", guitar.make).build()
 
   }
 

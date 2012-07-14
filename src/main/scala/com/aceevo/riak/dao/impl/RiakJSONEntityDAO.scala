@@ -40,7 +40,6 @@ class RiakJSONEntityDAO[K, T <: PersistentEntity](storageDriver: RiakStorageDriv
 
   def fromDomain(t: T, vClock: VClock): IRiakObject = {
     val dataAsString = generate(t)
-    //val data = (dataAsString).map(_.toChar).toCharArray.map(_.toByte)
 
     val iRiakObject = RiakObjectBuilder.newBuilder(storageDriver.getBucket, t.getKey)
       .withVClock(vClock)
@@ -50,19 +49,19 @@ class RiakJSONEntityDAO[K, T <: PersistentEntity](storageDriver: RiakStorageDriv
 
     val riakIndexes = new RiakIndexes
 
-    for (index <- stringIndexes) {
-      val field = t.getClass.getDeclaredField(index)
-      field.setAccessible(true)
-      val fieldValue = field.get(t).asInstanceOf[String]
-      riakIndexes.add(index, fieldValue)
-    }
+    stringIndexes.foreach({
+      index =>
+        val field = t.getClass.getDeclaredField(index)
+        field.setAccessible(true)
+        riakIndexes.add(index, field.get(t).asInstanceOf[String])
+    })
 
-    for (index <- integerIndexes) {
-      val field = t.getClass.getDeclaredField(index)
-      field.setAccessible(true)
-      val fieldValue = field.get(t).asInstanceOf[Int]
-      riakIndexes.add(index, fieldValue)
-    }
+    integerIndexes.foreach({
+      index =>
+        val field = t.getClass.getDeclaredField(index)
+        field.setAccessible(true)
+        riakIndexes.add(index, field.get(t).asInstanceOf[Int])
+    })
 
     iRiakObject.withIndexes(riakIndexes)
     iRiakObject.build()
