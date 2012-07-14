@@ -41,7 +41,7 @@ class InMemoryDriver[T] extends RiakStorageDriver[String, T] with Logging {
     map.put(key, t).get
   }
 
-  def delete(value: T) { 
+  def delete(t: T) { 
     map.retain({(key,value) => value != t})
   }
 
