@@ -54,7 +54,7 @@ class InMemoryDriver[T] extends RiakStorageDriver[String, T] with Logging {
   }
 
   def findFor2i(index: String, value: Int, converter: Converter[T]) = {
-    map.values.filter(v => v.toString.contains(value)).toList
+    findFor2i(index, value.toString, converter);
   }
 
   def deleteFor2i(index: String, value: String) {}
